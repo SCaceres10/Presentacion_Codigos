@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Codigos Finales Muestra</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<h1>Presentacion Codigos Corte #1</h1>
+		<style>
+			body {
+				background-color: #7b7fc4;
+			}
+
+			#blocker {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+
+			#container{
+				position: relative;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container"></div>
+		<div id="blocker"></div>
+		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@0.140.2/build/three.module.js"
+                }
+            }
+		</script>
+
+
+
+		<script type="module">
+
+			import * as THREE from 'https://unpkg.com/three@0.140.2/build/three.module.js';
+			import { GLTFLoader } from 'https://unpkg.com/three@0.140.2/examples/jsm/loaders/GLTFLoader.js';
+			import { OrbitControls } from 'https://unpkg.com/three@0.140.2/examples/jsm/controls/OrbitControls.js';
+			import { CSS3DRenderer, CSS3DObject } from 'https://unpkg.com/three@0.140.2/examples/jsm/renderers/CSS3DRenderer.js';
+			
+			let camera,camera3D, scene, renderer, renderer3D;
+
+			// Controlador de teclado
+            const keyboard = {};
+            function keyDown(event) {
+                keyboard[event.code] = true;
+            }
+            function keyUp(event) {
+                keyboard[event.code] = false;
+            }
+			document.addEventListener('keydown', keyDown);
+            document.addEventListener('keyup', keyUp);
+			
+			
+
+			function colab( id, x, y, z, ry ,tamañoX="480",tamañoY="360") {
+				const div = document.createElement( 'div' );
+				div.style.width = tamañoX+'px';
+				div.style.height = tamañoY+'px';
+				div.style.backgroundColor = '#000';
+
+				const iframe = document.createElement( 'iframe' );
+				iframe.style.width = tamañoX+'px';
+				iframe.style.height = tamañoY+'px';
+				iframe.style.border = '5px';
+				iframe.src = id;
+
+				div.appendChild( iframe );
+				const object = new CSS3DObject( div );
+				object.position.set( x, y, z );
+				object.rotation.y = ry;
+				return object;
+				}
+
+			function ImageElement(imageUrl, x, y, z, ry, tamañoX='480px', tamañoY = '360px') {
+				
+				const div = document.createElement( 'div' );
+				div.style.width = tamañoX+"px";
+				div.style.height = tamañoY+'px';
+				div.style.backgroundColor = '#000';
+
+				const img = document.createElement( 'img' );
+				img.style.width = tamañoX+"px";
+				img.style.height = tamañoY+"px";
+				img.src = imageUrl;
+				div.appendChild( img );
+
+				const object = new CSS3DObject( div );
+				object.position.set( x, y, z );
+				object.rotation.x = ry;
+				return object;
+			}
+
+
+            function moveCamera() {
+				
+				if (keyboard['KeyG']) {
+                    controls.reset();
+                }
+				
+				//Cambiar entre imagenes
+				if (keyboard['KeyI']) {
+                    camera.position.x=4000;
+                }
+				if (keyboard['KeyO']) {
+                    camera.position.x=-4000;
+                }
+
+				//Moverse Poco Render Iframe
+				if (keyboard['KeyE']) {
+                    camera.position.z += 15;
+                }
+				if (keyboard['KeyR']) {
+					camera.position.z -= 15;
+                }
+                if (keyboard['KeyW']) {
+                    camera.position.y += 15;
+                }
+                if (keyboard['KeyA']) {
+                    camera.position.x -= 15;
+                }
+                if (keyboard['KeyS']) {
+                    camera.position.y -= 15;
+                }
+                if (keyboard['KeyD']) {
+                    camera.position.x += 15;
+                }
+
+				//Mover Modelo 3D
+				if (keyboard['ArrowUp']) {
+					camera3D.position.z -= 1;
+				}
+				if (keyboard['ArrowDown']) {
+					camera3D.position.z += 1;
+				}
+				if (keyboard['ArrowLeft']) {
+					camera3D.position.x -= 1;
+				}
+				if (keyboard['ArrowRight']) {
+					camera3D.position.x += 1;
+				}
+            }
+			init();
+			animate();
+
+			function init() {
+				const container = document.getElementById( 'container' );
+
+				//Camara del modelo
+				camera3D = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight,0.1, 1000 );
+				camera3D.position.z = 10;
+
+				//Camara del iframe
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight,0.1, 1000 );
+				camera.position.z = 1080;
+
+				scene = new THREE.Scene();
+				const loader = new GLTFLoader();
+				
+
+				renderer3D = new THREE.WebGLRenderer();
+				//renderer3D.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer3D.domElement );
+
+				renderer = new CSS3DRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				loader.load('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1681087037/CuyR_ladeaa.glb', function (gltf) {
+				scene.add(gltf.scene);
+        		});
+				
+				const luzAmbiente = new THREE.AmbientLight(0xffffff, 1);
+        		scene.add(luzAmbiente);
+
+				const group = new THREE.Group();
+				group.add( new ImageElement('https://images.unsplash.com/photo-1681908571128-d5916951bf9c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=908&q=80t=crop&w=387&q=80',-4300,400,0,0,"4100","2500"))
+				group.add( new ImageElement('https://images.unsplash.com/photo-1682241229580-e72acdf0eb6d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',4300,400,0,0,"4100","2500"))
+				group.add( new ImageElement('https://images.unsplash.com/photo-1679199688745-7756b94ec8fc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',0,400,0,0,"4100","2500"))
+				group.add( new ImageElement('https://images.unsplash.com/photo-1681064163182-bf94305ed41a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=681&q=80',0,-700,0,1500,"16900","8100"))
+				//Codigos
+
+				//Primera imagen
+				group.add( new colab ( 'pagina.html', -3800, 100, 0, 0 ,1000,2000) ); 
+				group.add( new colab ( 'cuy.html', -5000, 0, 0, 0 ,850,1350) ); 
+				group.add( new colab ( 'ejercicio_4.html', 3300, -100, 0, 0 ,650,600) );
+				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682698943/test_2_mio7cg.png',3300,500,0,0))
+				//Segunda Imagen 
+                group.add( new colab ( 'ejercicio_3.html', 1700, 0, 0, 0 ,100,120) ); 
+				group.add( new colab ( 'ejercicio_2.html', 500, 100, 0, 0 ,600,1000) );
+
+				group.add( new colab ('ejercicio_1.html', -400, 0,0,0 ) );
+				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682698312/test_1_dj1zgf.png',-400,500,0,0))
+
+				group.add( new colab ('iframe.html',-1200,0,0,0,600,600));
+				scene.add( group );
+				
+			}
+			const controls = new OrbitControls( camera, renderer.domElement );
+			
+
+			function animate() {
+				requestAnimationFrame( animate );
+                moveCamera();
+				renderer3D.render( scene, camera3D );
+				renderer.render( scene, camera );
+				
+
+			}
+		</script>
+	</body>
+</html>
