@@ -1,10 +1,10 @@
 import pytest
-from tarea_1 import CalProm
+from tarea_1 import f
 
 def test_sumar():
-    #Basic Test
-    assert CalProm(2.5,3.3,4.2) == 3.75
-    #2 numeros iguales test
-    assert CalProm(2.2,4.4,4.4) == 4.4
-    #Numeros negativos y cero
-    assert CalProm(-1,0,4) == 2
+    # no inicia con CA
+    assert f(["perro","ayuda","adios","camello","hamaca"]) == ["CAMELLO"]
+    # Ninguno con CA
+    assert f(["teclado","pelota","ciclo","maquina","IA"]) == []
+    #2 Varios con CA
+    assert f(["casa","carro","perro","paseo","cabeza"]) == ["CASA","CARRO","CABEZA"]

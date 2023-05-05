@@ -5,27 +5,38 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<h1>Presentacion Codigos Corte #1</h1>
+		
 		<style>
 			body {
 				background-color: #7b7fc4;
 			}
-
-			#blocker {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-			}
-
 			#container{
-				position: relative;
-			}
+                position: relative;
+
+            }
+            #container canvas{
+                display: block;
+                position:absolute;
+                top:0;
+                left:0;
+                width:100%;
+                height:100%;
+                z-index: 4;
+            }
+            #cssRenderer{
+                display: block;
+                position:absolute;
+                top:0;
+                left:0;
+                width:100%;
+                height:100%;
+            }
 		</style>
 	</head>
 	<body>
-		<div id="container"></div>
-		<div id="blocker"></div>
+		<div id="container">
+            <div id="CSSRenderer"> </div>
+        </div>
 		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
 
         <script type="importmap">
@@ -106,11 +117,12 @@
                 }
 				
 				//Cambiar entre imagenes
-				if (keyboard['KeyI']) {
-                    camera.position.x=4000;
-                }
 				if (keyboard['KeyO']) {
-                    camera.position.x=-4000;
+                    camera.position.x=4500;
+                }
+
+				if (keyboard['KeyI']) {
+                    camera.position.x=-4500;
                 }
 
 				//Moverse Poco Render Iframe
@@ -122,18 +134,29 @@
                 }
                 if (keyboard['KeyW']) {
                     camera.position.y += 15;
+					
                 }
                 if (keyboard['KeyA']) {
                     camera.position.x -= 15;
+					
                 }
                 if (keyboard['KeyS']) {
                     camera.position.y -= 15;
+					
                 }
                 if (keyboard['KeyD']) {
                     camera.position.x += 15;
+					
+
                 }
 
 				//Mover Modelo 3D
+				if (keyboard['ArrowUp']) {
+					camera3D.position.x = 12;
+					camera3D.position.y = 5;
+					
+					
+				}
 				if (keyboard['ArrowUp']) {
 					camera3D.position.z -= 1;
 				}
@@ -146,16 +169,25 @@
 				if (keyboard['ArrowRight']) {
 					camera3D.position.x += 1;
 				}
+				if (keyboard['ArrowRight']) {
+					camera3D.position.x += 1;
+				}
             }
 			init();
 			animate();
 
 			function init() {
-				const container = document.getElementById( 'container' );
+				const container = document.getElementById( 'container', { alpha: true } );
+    			const domContainer=document.getElementById("CSSRenderer")
 
 				//Camara del modelo
 				camera3D = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight,0.1, 1000 );
-				camera3D.position.z = 10;
+				camera3D.position.z = 20;
+				camera3D.position.y = 15;
+				camera3D.position.x = 15;
+
+				
+				
 
 				//Camara del iframe
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight,0.1, 1000 );
@@ -169,9 +201,14 @@
 				//renderer3D.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer3D.domElement );
 
-				renderer = new CSS3DRenderer();
+				renderer = new CSS3DRenderer({element:domContainer});
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
+
+				renderer3D.setClearColor( 0x000000, 0 );
+    			renderer3D.setPixelRatio(window.devicePixelRatio);
+				renderer3D.setSize( window.innerWidth, window.innerHeight );
+
 
 				loader.load('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1681087037/CuyR_ladeaa.glb', function (gltf) {
 				scene.add(gltf.scene);
@@ -181,29 +218,52 @@
         		scene.add(luzAmbiente);
 
 				const group = new THREE.Group();
-				group.add( new ImageElement('https://images.unsplash.com/photo-1681908571128-d5916951bf9c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=908&q=80t=crop&w=387&q=80',-4300,400,0,0,"4100","2500"))
+				group.add( new ImageElement('https://images.unsplash.com/photo-1681767892373-f1af9a264226?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',-4300,400,0,0,"4100","2500"))
 				group.add( new ImageElement('https://images.unsplash.com/photo-1682241229580-e72acdf0eb6d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',4300,400,0,0,"4100","2500"))
 				group.add( new ImageElement('https://images.unsplash.com/photo-1679199688745-7756b94ec8fc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',0,400,0,0,"4100","2500"))
-				group.add( new ImageElement('https://images.unsplash.com/photo-1681064163182-bf94305ed41a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=681&q=80',0,-700,0,1500,"16900","8100"))
-				//Codigos
+				group.add( new ImageElement('https://www.softzone.es/app/uploads-softzone.es/2020/07/Raspberry-Pi.jpg',8600,400,0,0,"4100","2500"))
+				group.add( new ImageElement('https://user-images.githubusercontent.com/34452566/112919348-f1417f00-90d4-11eb-9b87-a347ae485577.png',-8600,400,0,0,"4100","2500"))
+
+				group.add( new ImageElement('https://images.unsplash.com/photo-1681064163182-bf94305ed41a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=681&q=80',0,-700,0,1500,"36900","8100")) // Piso
+				//Codigos Berry
+				group.add( new colab ( 'berry_1.html', 7200,200, 0, 0 ,900,1000) );
+				group.add( new colab ( 'berry_2.html', 8200,200, 0, 0 ,850,550) );
+				group.add( new colab ( 'berry_3.html', 9150,200, 0, 0 ,550,550) );
+				//Codigos Code Wars
+				group.add( new colab ( 'CodeWars_28.html', -7900,200, 0, 0 ,900,1000) );
+				group.add( new colab ( 'CodeWars_21.html', -9200,200, 0, 0 ,900,900) );
+
+
+
+
 
 				//Primera imagen
-				group.add( new colab ( 'pagina.html', -3800, 100, 0, 0 ,1000,2000) ); 
-				group.add( new colab ( 'cuy.html', -5000, 0, 0, 0 ,850,1350) ); 
-				group.add( new colab ( 'ejercicio_4.html', 3300, -100, 0, 0 ,650,600) );
-				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682698943/test_2_mio7cg.png',3300,500,0,0))
-				//Segunda Imagen 
-                group.add( new colab ( 'ejercicio_3.html', 1700, 0, 0, 0 ,100,120) ); 
-				group.add( new colab ( 'ejercicio_2.html', 500, 100, 0, 0 ,600,1000) );
+				group.add( new colab ( 'pagina.html', -3800, 200, 0, 0 ,1000,1600) ); 
+				group.add( new colab ( 'cuy.html', -5000, 200, 0, 0 ,850,1350) ); 
 
-				group.add( new colab ('ejercicio_1.html', -400, 0,0,0 ) );
+				group.add( new colab ( 'ejercicio_5.html', 4100, -100, 0, 0 ,650,650) );
+				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682900647/test_3_ezsjhh.png',4100,600,0,0))
+
+				group.add( new colab ( 'ejercicio_4.html', 3000, -100, 0, 0 ,650,600) );
+				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682698943/test_2_mio7cg.png',3000,600,0,0))
+				
+				//Segunda Imagen 
+                group.add( new colab ( 'ejercicio_3.html', 1500, 0, 0, 0 ,800,200) );
+				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682902175/test_4_wii27w.png',1500,500,0,0))
+
+
+				group.add( new colab ( 'ejercicio_2.html', 500, 100, 0, 0 ,600,1000) );
+				group.add( new colab ( 'componentesJS.html', 500, 1100, 0, 0 ,600,800) );
+
+
+				group.add( new colab ('ejercicio_1.html', -500, 0,0,0 ) );
 				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682698312/test_1_dj1zgf.png',-400,500,0,0))
 
-				group.add( new colab ('iframe.html',-1200,0,0,0,600,600));
+				group.add( new colab ('iframe.html',-1300,0,0,0,600,600));
 				scene.add( group );
 				
 			}
-			const controls = new OrbitControls( camera, renderer.domElement );
+			const controls = new OrbitControls( camera, renderer3D.domElement );
 			
 
 			function animate() {
