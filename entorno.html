@@ -56,7 +56,7 @@
 			import { OrbitControls } from 'https://unpkg.com/three@0.140.2/examples/jsm/controls/OrbitControls.js';
 			import { CSS3DRenderer, CSS3DObject } from 'https://unpkg.com/three@0.140.2/examples/jsm/renderers/CSS3DRenderer.js';
 			
-			let camera,camera3D, scene, renderer, renderer3D;
+			let camera,camera3D, scene, renderer, renderer3D,modeloCuy;
 
 			// Controlador de teclado
             const keyboard = {};
@@ -118,11 +118,11 @@
 				
 				//Cambiar entre imagenes
 				if (keyboard['KeyO']) {
-                    camera.position.x=4500;
+                    camera.position.x+=900;
                 }
 
 				if (keyboard['KeyI']) {
-                    camera.position.x=-4500;
+                    camera.position.x-=900;
                 }
 
 				//Moverse Poco Render Iframe
@@ -133,29 +133,24 @@
 					camera.position.z -= 15;
                 }
                 if (keyboard['KeyW']) {
-                    camera.position.y += 15;
-					
+                    camera.position.y += 15;	
                 }
                 if (keyboard['KeyA']) {
-                    camera.position.x -= 15;
-					
+                    camera.position.x -= 15;	
                 }
                 if (keyboard['KeyS']) {
                     camera.position.y -= 15;
-					
                 }
                 if (keyboard['KeyD']) {
                     camera.position.x += 15;
-					
-
                 }
 
 				//Mover Modelo 3D
+				if (keyboard['KeyQ']) {
+					modeloCuy.rotation.y += 0.05;					
+				}
 				if (keyboard['ArrowUp']) {
-					camera3D.position.x = 12;
-					camera3D.position.y = 5;
-					
-					
+					camera3D.position.y = 3;					
 				}
 				if (keyboard['ArrowUp']) {
 					camera3D.position.z -= 1;
@@ -164,13 +159,10 @@
 					camera3D.position.z += 1;
 				}
 				if (keyboard['ArrowLeft']) {
+					camera3D.position.x += 1;
+				}
+				if (keyboard['ArrowRight']) {
 					camera3D.position.x -= 1;
-				}
-				if (keyboard['ArrowRight']) {
-					camera3D.position.x += 1;
-				}
-				if (keyboard['ArrowRight']) {
-					camera3D.position.x += 1;
 				}
             }
 			init();
@@ -182,9 +174,10 @@
 
 				//Camara del modelo
 				camera3D = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight,0.1, 1000 );
+				
 				camera3D.position.z = 20;
-				camera3D.position.y = 15;
-				camera3D.position.x = 15;
+				camera3D.position.y = 10;
+				camera3D.position.x = 26;
 
 				
 				
@@ -211,7 +204,8 @@
 
 
 				loader.load('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1681087037/CuyR_ladeaa.glb', function (gltf) {
-				scene.add(gltf.scene);
+					modeloCuy = gltf.scene;
+					scene.add(modeloCuy);
         		});
 				
 				const luzAmbiente = new THREE.AmbientLight(0xffffff, 1);
@@ -245,7 +239,7 @@
 				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682900647/test_3_ezsjhh.png',4100,600,0,0))
 
 				group.add( new colab ( 'ejercicio_4.html', 3000, -100, 0, 0 ,650,600) );
-				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1682698943/test_2_mio7cg.png',3000,600,0,0))
+				group.add( new ImageElement('https://res.cloudinary.com/dw5ygqf1v/image/upload/v1683567352/imagen_2023-05-08_123549243_hr9zue.png',3000,800,0,0))
 				
 				//Segunda Imagen 
                 group.add( new colab ( 'ejercicio_3.html', 1500, 0, 0, 0 ,800,200) );
